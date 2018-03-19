@@ -92,7 +92,7 @@ function displayOsd(autohide) {
     $('#osd').fadeIn("fast");
     clearTimeout(osdTimeout);
     if (autohide) {
-        osdTimeout = setTimeout(function () {
+        osdTimeout = setTimeout(() => {
             $('#osd').fadeOut("fast");
         }, 5000);
     }
@@ -103,7 +103,7 @@ function displayVolume(autohide) {
     $('#volume').fadeIn("fast");
     clearTimeout(volumeTimeout);
     if (autohide) {
-        volumeTimeout = setTimeout(function () {
+        volumeTimeout = setTimeout( () => {
             $('#volume').fadeOut("fast");
         }, 2000);
     }
@@ -118,6 +118,13 @@ function displayBuffering(bool) {
     }
 }
 
+function displayMute(bool) {
+    if (bool) {
+        $('#mute').fadeIn("fast");
+    } else {
+        $('#mute').fadeOut("fast");
+    }
+}
 
 function clearPlayer() {
     Log.debug(TAG + "clearPlayer");
@@ -177,7 +184,7 @@ var init = function () {
     // Create a Custom Channel
     let CUSTOM_NAMESPACE = "urn:x-cast:sample";
     let customChannel = _ocast.createChannel(CUSTOM_NAMESPACE);
-    customChannel.onMessage = function(openCastDeviceMessage) {
+    customChannel.onMessage = (openCastDeviceMessage) => {
         console.log(TAG + "onMessage:"+openCastDeviceMessage.data+" from:"+openCastDeviceMessage.src);
         // 1- Reply
         this.sendReply(openCastDeviceMessage.id, openCastDeviceMessage.src, {params: {code: EnumError.OK}});
@@ -188,7 +195,7 @@ var init = function () {
         this.sendEvent({customPlayer:"ready"});
     };
 
-    this.onPrepare = function (url, title, subtitle, logo, mediaType, transferMode, autoplay, frequency, options) {
+    this.onPrepare =  (url, title, subtitle, logo, mediaType, transferMode, autoplay, frequency, options) => {
         Log.debug(TAG + 'onPrepare(' + url + ',' + mediaType+ ',' +transferMode + ',' + autoplay + ')');
         switch (mediaType) {
             case EnumMedia.AUDIO:
@@ -223,7 +230,7 @@ var init = function () {
     };
 
     // On Seek Event
-    this.onSeek = function (position, options) {
+    this.onSeek =  (position, options) => {
         displayOsd(true);
         displayPause(false);
         displayBuffering(false);
@@ -232,12 +239,12 @@ var init = function () {
 
 
     // Change Track callback
-    this.onTrack = function (type, trackId, enabled, options) {
+    this.onTrack =  (type, trackId, enabled, options) => {
         return EnumError.OK;
     };
 
     // Resum Callback
-    this.onResume = function (options) {
+    this.onResume =  (options) => {
         displayOsd(true);
         displayPause(false);
         displayBuffering(false);
@@ -245,14 +252,14 @@ var init = function () {
     };
 
     // On Pause event
-    this.onPause = function () {
+    this.onPause =  () => {
         displayOsd(true);
         displayPause(true);
         return EnumError.OK;
     };
 
     // On set volume event
-    this.onVolume = function (level) {
+    this.onVolume =  (level) => {
         Log.debug(TAG + "onSetVolume", level);
         displayVolume(true);
         console.log("width", (level / 1) * 100, "volumeBar", $volumeBar, $volumeBar.css('width'));
@@ -261,19 +268,20 @@ var init = function () {
     };
 
     // On set mute event
-    this.onMute = function (mute) {
+    this.onMute = (mute) => {
+        displayMute(mute);
         return EnumError.OK;
     };
 
     // On close event
-    this.onClose = function () {
+    this.onClose =  () => {
         Log.debug(TAG + "onClose");
         displayHome();
         return EnumError.OK;
     };
 
     // On stop Event
-    this.onStop = function () {
+    this.onStop =  () => {
         Log.debug(TAG + "onStop");
         displayHome();
         return EnumError.OK;
@@ -282,7 +290,7 @@ var init = function () {
 
     }
     // On updateStatus
-    this.onUpdateStatus = function (playbackStatus) {
+    this.onUpdateStatus = (playbackStatus) => {
         Log.debug(TAG + " onUpdateStatus", playbackStatus);
         if (playbackStatus instanceof VideoPlaybackStatus) {
             var current = toTimer(playbackStatus.position),
