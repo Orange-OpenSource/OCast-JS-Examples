@@ -1,3 +1,5 @@
+[Deprecated: Use new receiver samples https://github.com/Orange-OpenSource/ocast-receiver-samples]
+
 # OCast-JS-Examples
 Cast JS SDK implementation examples : ES5, ES6 and Angular 5
 ## Requirements
